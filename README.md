@@ -29,7 +29,7 @@ A modern web application built with Next.js for managing schedules and lessons. 
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/DawidChorazy/schedule-app.git
    cd schedule-app
    ```
 
