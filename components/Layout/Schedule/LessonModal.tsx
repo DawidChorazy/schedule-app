@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Dialog, Listbox } from '@headlessui/react';
 import { Lesson } from '@/types';
 
 interface LessonModalProps {
@@ -78,23 +79,23 @@ export default function LessonModal({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              {lesson ? 'Edytuj zajęcia' : 'Dodaj zajęcia'}
-            </h2>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 text-2xl"
-            >
-              ×
-            </button>
-          </div>
+    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+      <div className="fixed inset-0 bg-black bg-opacity-50" />
+      <div className="fixed inset-0 flex items-center justify-center p-4">
+        <Dialog.Panel className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-6">
+              <Dialog.Title className="text-2xl font-bold text-gray-900">
+                {lesson ? 'Edytuj zajęcia' : 'Dodaj zajęcia'}
+              </Dialog.Title>
+              <button
+                onClick={onClose}
+                className="text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                ×
+              </button>
+            </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Nazwa zajęć */}
@@ -118,34 +119,56 @@ export default function LessonModal({
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Dzień tygodnia *
                 </label>
-                <select
-                  value={day}
-                  onChange={(e) => setDay(Number(e.target.value))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                >
-                  {DAYS.map((dayName, index) => (
-                    <option key={index} value={index}>
-                      {dayName}
-                    </option>
-                  ))}
-                </select>
+                <Listbox value={day} onChange={setDay}>
+                  <div className="relative">
+                    <Listbox.Button className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 text-left">
+                      {DAYS[day]}
+                    </Listbox.Button>
+                    <Listbox.Options className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                      {DAYS.map((dayName, index) => (
+                        <Listbox.Option
+                          key={index}
+                          value={index}
+                          className={({ active }) =>
+                            `cursor-pointer select-none px-4 py-2 ${
+                              active ? 'bg-blue-100' : 'text-gray-900'
+                            }`
+                          }
+                        >
+                          {dayName}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </div>
+                </Listbox>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Godzina rozpoczęcia *
                 </label>
-                <select
-                  value={startHour}
-                  onChange={(e) => setStartHour(Number(e.target.value))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                >
-                  {Array.from({ length: 13 }, (_, i) => i + 8).map((hour) => (
-                    <option key={hour} value={hour}>
-                      {hour}:00
-                    </option>
-                  ))}
-                </select>
+                <Listbox value={startHour} onChange={setStartHour}>
+                  <div className="relative">
+                    <Listbox.Button className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 text-left">
+                      {startHour}:00
+                    </Listbox.Button>
+                    <Listbox.Options className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                      {Array.from({ length: 13 }, (_, i) => i + 8).map((hour) => (
+                        <Listbox.Option
+                          key={hour}
+                          value={hour}
+                          className={({ active }) =>
+                            `cursor-pointer select-none px-4 py-2 ${
+                              active ? 'bg-blue-100' : 'text-gray-900'
+                            }`
+                          }
+                        >
+                          {hour}:00
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </div>
+                </Listbox>
               </div>
             </div>
 
@@ -154,18 +177,75 @@ export default function LessonModal({
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Czas trwania (godziny) *
               </label>
-              <select
-                value={duration}
-                onChange={(e) => setDuration(Number(e.target.value))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-              >
-                <option value={0.5}>0.5 godziny</option>
-                <option value={1}>1 godzina</option>
-                <option value={1.5}>1.5 godziny</option>
-                <option value={2}>2 godziny</option>
-                <option value={2.5}>2.5 godziny</option>
-                <option value={3}>3 godziny</option>
-              </select>
+              <Listbox value={duration} onChange={setDuration}>
+                <div className="relative">
+                  <Listbox.Button className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 text-left">
+                    {duration} {duration === 1 ? 'godzina' : duration < 2 ? 'godziny' : 'godzin'}
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                    <Listbox.Option
+                      value={0.5}
+                      className={({ active }) =>
+                        `cursor-pointer select-none px-4 py-2 ${
+                          active ? 'bg-blue-100' : 'text-gray-900'
+                        }`
+                      }
+                    >
+                      0.5 godziny
+                    </Listbox.Option>
+                    <Listbox.Option
+                      value={1}
+                      className={({ active }) =>
+                        `cursor-pointer select-none px-4 py-2 ${
+                          active ? 'bg-blue-100' : 'text-gray-900'
+                        }`
+                      }
+                    >
+                      1 godzina
+                    </Listbox.Option>
+                    <Listbox.Option
+                      value={1.5}
+                      className={({ active }) =>
+                        `cursor-pointer select-none px-4 py-2 ${
+                          active ? 'bg-blue-100' : 'text-gray-900'
+                        }`
+                      }
+                    >
+                      1.5 godziny
+                    </Listbox.Option>
+                    <Listbox.Option
+                      value={2}
+                      className={({ active }) =>
+                        `cursor-pointer select-none px-4 py-2 ${
+                          active ? 'bg-blue-100' : 'text-gray-900'
+                        }`
+                      }
+                    >
+                      2 godziny
+                    </Listbox.Option>
+                    <Listbox.Option
+                      value={2.5}
+                      className={({ active }) =>
+                        `cursor-pointer select-none px-4 py-2 ${
+                          active ? 'bg-blue-100' : 'text-gray-900'
+                        }`
+                      }
+                    >
+                      2.5 godziny
+                    </Listbox.Option>
+                    <Listbox.Option
+                      value={3}
+                      className={({ active }) =>
+                        `cursor-pointer select-none px-4 py-2 ${
+                          active ? 'bg-blue-100' : 'text-gray-900'
+                        }`
+                      }
+                    >
+                      3 godziny
+                    </Listbox.Option>
+                  </Listbox.Options>
+                </div>
+              </Listbox>
             </div>
 
             {/* Prowadzący i sala */}
@@ -294,7 +374,8 @@ export default function LessonModal({
             </div>
           </form>
         </div>
-      </div>
+      </Dialog.Panel>
     </div>
+  </Dialog>
   );
 }
