@@ -32,7 +32,7 @@ export default function RegisterPage() {
 
     try {
       await signUp(email, password);
-      router.push('/schedule');
+      router.push('/verify-email');
     } catch (err: any) {
       if (err.code === 'auth/email-already-in-use') {
         setError('Ten email jest już zarejestrowany');

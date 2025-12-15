@@ -34,8 +34,8 @@ export default function LessonModal({
 }: LessonModalProps) {
   const [title, setTitle] = useState('');
   const [day, setDay] = useState(0);
-  const [startHour, setStartHour] = useState(8);
-  const [duration, setDuration] = useState(1);
+  const [startHour, setStartHour] = useState(18);
+  const [duration, setDuration] = useState(3);
   const [teacher, setTeacher] = useState('');
   const [room, setRoom] = useState('');
   const [description, setDescription] = useState('');
@@ -55,7 +55,7 @@ export default function LessonModal({
       setTitle('');
       setDay(initialDay);
       setStartHour(initialHour);
-      setDuration(1);
+      setDuration(3);
       setTeacher('');
       setRoom('');
       setDescription('');
@@ -150,10 +150,10 @@ export default function LessonModal({
                 <Listbox value={startHour} onChange={setStartHour}>
                   <div className="relative">
                     <Listbox.Button className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 text-left">
-                      {startHour}:00
+                      {Math.floor(startHour)}:{startHour % 1 === 0 ? '00' : '30'}
                     </Listbox.Button>
                     <Listbox.Options className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
-                      {Array.from({ length: 13 }, (_, i) => i + 8).map((hour) => (
+                      {Array.from({ length: 26 }, (_, i) => 8 + i * 0.5).map((hour) => (
                         <Listbox.Option
                           key={hour}
                           value={hour}
@@ -163,7 +163,7 @@ export default function LessonModal({
                             }`
                           }
                         >
-                          {hour}:00
+                          {Math.floor(hour)}:{hour % 1 === 0 ? '00' : '30'}
                         </Listbox.Option>
                       ))}
                     </Listbox.Options>

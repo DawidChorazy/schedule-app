@@ -10,12 +10,12 @@ interface WeekViewProps {
 }
 
 const DAYS = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'];
-const HOURS = Array.from({ length: 13 }, (_, i) => i + 8); // 8-20
+const HOURS = Array.from({ length: 26 }, (_, i) => 8 + i * 0.5); // 8:00, 8:30, ..., 20:30
 
 export default function WeekView({ lessons, onLessonClick, onEmptySlotClick }: WeekViewProps) {
   const getLessonForSlot = (day: number, hour: number) => {
     return lessons.find(
-      (lesson) => lesson.day === day && lesson.startHour === hour
+      (lesson) => lesson.day === day && hour >= lesson.startHour && hour <= lesson.startHour + lesson.duration
     );
   };
 
@@ -48,7 +48,7 @@ export default function WeekView({ lessons, onLessonClick, onEmptySlotClick }: W
             <div key={hour} className="contents">
               {/* Kolumna z godziną */}
               <div className="flex items-center justify-center font-semibold text-gray-600 bg-gray-50 rounded">
-                {hour}:00
+                {Math.floor(hour)}:{hour % 1 === 0 ? '00' : '30'}
               </div>
 
               {/* Kolumny dni */}
@@ -76,10 +76,10 @@ export default function WeekView({ lessons, onLessonClick, onEmptySlotClick }: W
                     {lesson && (
                       <div className="h-full flex flex-col">
                         <div className="font-semibold text-sm text-gray-900">{lesson.title}</div>
-                        {lesson.teacher && (
+                        {lesson.teacher && hour === lesson.startHour && (
                           <div className="text-xs text-gray-600 mt-1">{lesson.teacher}</div>
                         )}
-                        {lesson.room && (
+                        {lesson.room && hour === lesson.startHour && (
                           <div className="text-xs text-gray-500">Sala: {lesson.room}</div>
                         )}
                       </div>
@@ -120,14 +120,14 @@ export default function WeekView({ lessons, onLessonClick, onEmptySlotClick }: W
                     `}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-sm">{hour}:00</span>
+                      <span className="font-semibold text-sm">{Math.floor(hour)}:{hour % 1 === 0 ? '00' : '30'}</span>
                       {lesson ? (
                         <div>
                           <div className="font-semibold text-gray-900">{lesson.title}</div>
-                          {lesson.teacher && (
+                          {lesson.teacher && hour === lesson.startHour && (
                             <div className="text-sm text-gray-600">{lesson.teacher}</div>
                           )}
-                          {lesson.room && (
+                          {lesson.room && hour === lesson.startHour && (
                             <div className="text-sm text-gray-500">Sala: {lesson.room}</div>
                           )}
                         </div>
